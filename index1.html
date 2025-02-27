@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>try common passwords </title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            color: #2690e7;
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            width: 200px;
+            color: rgb(172, 23, 241);
+        }
+        .error {
+            color: red;
+        }
+        .success {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>enter password</h2>
+    
+    <!-- إدخال كلمة المرور -->
+    <input type="password" id="passwordInput" placeholder="">
+    
+    <!-- زر اختيار ملف الباسوردات -->
+    <input type="file" id="fileInput" accept=".txt">
+    
+    <button onclick="checkPassword()">ok</button>
+
+    <p id="message"></p>
+
+    <script>
+        let commonPasswords = [];
+
+        // عند اختيار الملف، نقرأ محتوياته
+        document.getElementById("fileInput").addEventListener("change", function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                commonPasswords = e.target.result.split("\n").map(p => p.trim()); // تخزين كلمات المرور في مصفوفة
+            };
+            reader.readAsText(file);
+        });
+
+        function checkPassword() {
+            const inputPassword = document.getElementById("passwordInput").value;
+            const message = document.getElementById("message");
+
+            if (commonPasswords.length === 0) {
+                message.innerHTML = "❌ upload file please !!";
+                message.className = "error";
+                return;
+            }
+
+            if (commonPasswords.includes(inputPassword)) {
+                message.innerHTML = "✅ login success";
+                message.className = "success";
+            } else {
+                message.innerHTML = "❌ the password is not right ";
+                message.className = "error";
+            }
+        }
+    </script>
+
+</body>
+</html>

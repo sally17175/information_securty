@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Verification</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #ffe6f2; 
+        }
+
+        .container {
+            background: white;
+            width: 350px;
+            padding: 20px;
+            margin: 100px auto;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            border: 3px solid #ff99cc;
+        }
+
+        h2 {
+            color: #cc6699; 
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #ff99cc; 
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: #fff0f5; 
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #ff66b2; 
+            border: none;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #ff3385; 
+        }
+
+        .message {
+            margin-top: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .success {
+            color: green;
+            opacity: 1;
+        }
+
+        .error {
+            color: red;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Password Verification</h2>
+
+        <!-- إدخال كلمة المرور يدويًا -->
+        <input type="password" id="passwordInput" placeholder="Enter Password">
+
+        <!-- أو تحميل ملف كلمات المرور -->
+        <input type="file" id="fileInput" accept=".txt">
+        
+        <button onclick="checkPassword()">Verify</button>
+
+        <p id="message" class="message"></p>
+    </div>
+
+    <script>
+        let commonPasswords = []; 
+        const storedPassword = "!qazxsw2"; // كلمة المرور المخزنة داخل الكود
+
+        // عند اختيار الملف، نقرأ محتوياته
+        document.getElementById("fileInput").addEventListener("change", function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                commonPasswords = e.target.result.split("\n").map(p => p.trim()); // تحويل محتوى الملف إلى مصفوفة
+            };
+            reader.readAsText(file);
+        });
+
+        function checkPassword() {
+            const inputPassword = document.getElementById("passwordInput").value;
+            const message = document.getElementById("message");
+
+            // ✅ التحقق من كلمة المرور التي أدخلها المستخدم يدويًا
+            if (inputPassword) {
+                if (inputPassword === storedPassword) {
+                    message.innerHTML = "✅ Login Successful!";
+                    message.className = "message success";
+                } else {
+                    message.innerHTML = "❌ Incorrect Password!";
+                    message.className = "message error";
+                }
+                return;
+            }
+
+            // ✅ التحقق من كلمة المرور داخل الملف
+            if (commonPasswords.length === 0) {
+                message.innerHTML = "❌ Please upload a password file or enter a password!";
+                message.className = "message error";
+                return;
+            }
+
+            if (commonPasswords.includes(storedPassword)) {
+                message.innerHTML = "✅ Login Successful! Password found in the file.";
+                message.className = "message success";
+            } else {
+                message.innerHTML = "❌ Incorrect Password! Not found in the file.";
+                message.className = "message error";
+            }
+        }
+    </script>
+
+</body>
+</html>
